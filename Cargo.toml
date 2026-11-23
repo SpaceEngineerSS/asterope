@@ -1,0 +1,34 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/asterope-core",
+    "crates/asterope-ffi",
+    "crates/asterope-io",
+    "crates/asterope-cli",
+    "crates/asterope-py",
+    "crates/asterope-wasm",
+    "xtask",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+rust-version = "1.88"
+repository = "https://github.com/SpaceEngineerSS/asterope"
+keywords = ["star-tracker", "attitude", "astrometry", "aerospace", "no-std"]
+categories = ["aerospace", "science", "no-std", "embedded"]
+
+[workspace.dependencies]
+libm = "0.2"
+asterope-core = { path = "crates/asterope-core", version = "0.1.0" }
+asterope-io = { path = "crates/asterope-io", version = "0.1.0" }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[profile.test]
+opt-level = 2

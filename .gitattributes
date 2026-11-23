@@ -1,0 +1,9 @@
+* text=auto eol=lf
+*.astc binary
+*.fits binary
+*.png binary
+*.jpg binary
+*.wasm binary
+*.asti binary
+*.mp4 binary
+*.webp binary

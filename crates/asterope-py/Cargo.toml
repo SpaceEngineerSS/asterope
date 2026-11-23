@@ -1,0 +1,20 @@
+[package]
+name = "asterope-py"
+description = "Python interface to the Asterope star tracker"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+publish = false
+
+[lib]
+name = "asterope"
+crate-type = ["cdylib"]
+test = false
+doctest = false
+
+[dependencies]
+asterope-core = { workspace = true, features = ["sim"] }
+numpy = "0.30"
+pyo3 = { version = "0.30", features = ["extension-module", "abi3-py39"] }

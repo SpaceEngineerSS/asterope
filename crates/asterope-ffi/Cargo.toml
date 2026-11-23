@@ -1,0 +1,20 @@
+[package]
+name = "asterope-ffi"
+description = "C interface to the Asterope star tracker"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+readme = "README.md"
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[dependencies]
+asterope-core.workspace = true
+
+[dev-dependencies]
+asterope-core = { workspace = true, features = ["sim"] }

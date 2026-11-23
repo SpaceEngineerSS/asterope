@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+title: Asterope
+abstract: >-
+  Star tracker software: detection, lost-in-space star identification,
+  attitude determination, tracking and gyro fusion, with a simulator, a
+  validation suite and a workbench in the browser.
+type: software
+authors:
+  - family-names: Gümüş
+    given-names: Mehmet
+version: 0.1.0
+date-released: 2026-11-24
+license:
+  - MIT
+  - Apache-2.0
+repository-code: https://github.com/SpaceEngineerSS/asterope
+keywords:
+  - star tracker
+  - attitude determination
+  - star identification
+  - astrometry

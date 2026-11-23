@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" font-family="'IBM Plex Mono', ui-monospace, monospace">
+  <title>Asterope pipeline: frame, detect, identify, verify, attitude, track</title>
+  <rect width="1200" height="300" fill="#0b0c0c"/>
+  <g fill="none" stroke="#3a403e">
+    <rect x="30" y="80" width="160" height="90"/>
+    <rect x="222" y="80" width="160" height="90"/>
+    <rect x="414" y="80" width="160" height="90"/>
+    <rect x="606" y="80" width="160" height="90"/>
+    <rect x="798" y="80" width="160" height="90" stroke="#7bd88f"/>
+    <rect x="990" y="80" width="180" height="90"/>
+  </g>
+  <g stroke="#7f8884" fill="none">
+    <path d="M190 125 H222 M382 125 H414 M574 125 H606 M766 125 H798 M958 125 H990"/>
+    <path d="M216 120 l6 5 -6 5 M408 120 l6 5 -6 5 M600 120 l6 5 -6 5 M792 120 l6 5 -6 5 M984 120 l6 5 -6 5"/>
+    <path d="M1080 170 V230 H302 V170" stroke-dasharray="3 6"/>
+    <path d="M297 176 l5 -6 5 6"/>
+  </g>
+  <g fill="#c8cdc7" font-size="15" letter-spacing="1.8">
+    <text x="46" y="112">FRAME</text>
+    <text x="238" y="112">DETECT</text>
+    <text x="430" y="112">IDENTIFY</text>
+    <text x="622" y="112">VERIFY</text>
+    <text x="814" y="112" fill="#7bd88f">ATTITUDE</text>
+    <text x="1006" y="112">TRACK</text>
+  </g>
+  <g fill="#7f8884" font-size="12">
+    <text x="46" y="136">16-bit pixels</text>
+    <text x="46" y="154">row-major</text>
+    <text x="238" y="136">background, peaks</text>
+    <text x="238" y="154">sub-pixel centroids</text>
+    <text x="430" y="136">pair angles in a</text>
+    <text x="430" y="154">sorted index, pyramid</text>
+    <text x="622" y="136">rest of the field</text>
+    <text x="622" y="154">chance probability</text>
+    <text x="814" y="136">QUEST quaternion</text>
+    <text x="814" y="154">RA, Dec, roll, 1σ</text>
+    <text x="1006" y="136">predict, match,</text>
+    <text x="1006" y="154">second opinion</text>
+    <text x="318" y="252">next frame: search only near the predicted positions; fall back to a full search when in doubt</text>
+  </g>
+  <text x="30" y="46" fill="#7f8884" font-size="12" letter-spacing="1.8">FRAME IN · QUATERNION OUT</text>
+</svg>

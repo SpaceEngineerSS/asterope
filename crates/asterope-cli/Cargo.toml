@@ -1,0 +1,23 @@
+[package]
+name = "asterope-cli"
+description = "Command-line star tracker: solve frames, simulate them, build onboard indexes, replay sequences"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+readme = "README.md"
+# The test that compares the catalog copy with the repository's needs the repository.
+exclude = ["tests/catalog_copy.rs"]
+repository.workspace = true
+keywords.workspace = true
+categories.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "asterope"
+path = "src/main.rs"
+
+[dependencies]
+asterope-core = { workspace = true, features = ["validation"] }
+asterope-io.workspace = true
+rayon = "1.10"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }

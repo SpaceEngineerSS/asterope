@@ -1,0 +1,25 @@
+[build-system]
+requires = ["maturin>=1.5,<2"]
+build-backend = "maturin"
+
+[project]
+name = "asterope"
+description = "Star tracker software: find where a camera points from the stars in its image"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT OR Apache-2.0" }
+dependencies = ["numpy>=1.22"]
+dynamic = ["version"]
+keywords = ["star tracker", "attitude determination", "astrometry", "plate solving", "cubesat"]
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Astronomy",
+]
+
+[project.urls]
+Repository = "https://github.com/SpaceEngineerSS/asterope"
+Documentation = "https://github.com/SpaceEngineerSS/asterope/blob/main/docs/python.md"
+
+[tool.maturin]
+module-name = "asterope"

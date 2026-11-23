@@ -1,0 +1,22 @@
+[package]
+name = "asterope-embedded"
+description = "Bare-metal build of the Asterope flight path, for size measurement"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[dependencies]
+asterope-core = { path = "../../crates/asterope-core" }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+debug = false
+
+[profile.dev]
+panic = "abort"
+
+[workspace]

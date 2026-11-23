@@ -1,0 +1,18 @@
+[build]
+target = "thumbv7em-none-eabihf"
+
+# Cortex-M7 has a double-precision FPU; Asterope computes in f64. On a core
+# with a single-precision FPU (Cortex-M4F) the same code builds and runs
+# with software doubles.
+[target.thumbv7em-none-eabihf]
+rustflags = [
+    "-C", "target-cpu=cortex-m7",
+    "-C", "link-arg=--entry=star_tracker_step",
+    "-C", "link-arg=--gc-sections",
+]
+
+[target.riscv32imac-unknown-none-elf]
+rustflags = [
+    "-C", "link-arg=--entry=star_tracker_step",
+    "-C", "link-arg=--gc-sections",
+]

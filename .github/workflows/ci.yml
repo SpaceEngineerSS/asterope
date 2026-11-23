@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown, thumbv7em-none-eabihf, riscv32imac-unknown-none-elf
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+      - run: cargo test --workspace --release
+      - name: Core builds without std for WebAssembly
+        run: cargo build --release --target wasm32-unknown-unknown -p asterope-core -p asterope-io
+      - name: Flight core builds for bare-metal targets
+        run: |
+          cargo build --release -p asterope-core --target thumbv7em-none-eabihf
+          cargo build --release -p asterope-core --target riscv32imac-unknown-none-elf
+      - name: Bare-metal image links
+        working-directory: examples/embedded
+        run: |
+          cargo build --release
+          cargo build --release --target riscv32imac-unknown-none-elf
+          node size.mjs target/thumbv7em-none-eabihf/release/asterope-embedded
+      - name: Flight path runs on an emulated Cortex-M7 with the same bits
+        working-directory: examples/emulated
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends qemu-system-arm
+          node run.mjs
+      - name: C header is current and the C example builds and runs
+        run: |
+          cargo install cbindgen --locked
+          cd crates/asterope-ffi
+          cbindgen --config cbindgen.toml --crate asterope-ffi --verify --output include/asterope.h
+          cd ../..
+          cargo build --release -p asterope-ffi -p asterope-cli
+          cc -Wall -Wextra -O2 -Icrates/asterope-ffi/include crates/asterope-ffi/examples/solve.c \
+             -o solve_c target/release/libasterope_ffi.a -lm -lpthread -ldl
+          target/release/asterope simulate --out frame.raw --frames 3 --rate 0.3,0.5,0
+          ./solve_c data/flight-14deg.astc data/flight-14deg.asti 1024 1024 14 frame-0000.raw frame-0001.raw frame-0002.raw
+      - name: Lost-in-space report
+        run: target/release/asterope validate --trials 1000 --seed 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: validation-report
+          path: validation-report.*
+
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install maturin numpy pytest
+      - run: cargo build --release -p asterope-cli
+      - run: maturin build --release -m crates/asterope-py/Cargo.toml
+      - run: pip install target/wheels/asterope-*.whl
+      - run: pytest crates/asterope-py/tests -q
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo install wasm-pack --locked
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run wasm
+      - run: npm run typecheck
+      - run: npm run lint
+      - name: Unit tests, including native/WebAssembly parity
+        run: npm test
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - name: End-to-end tests
+        run: npm run e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-results
+          path: web/test-results

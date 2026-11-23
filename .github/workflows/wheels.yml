@@ -1,0 +1,66 @@
+name: Wheels
+
+# Builds the Python package for Linux, macOS and Windows. Started by hand:
+# with "publish" ticked the wheels go to PyPI through trusted publishing,
+# which needs this workflow and the "pypi" environment registered on the
+# PyPI project.
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Upload the wheels to PyPI
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.os }} ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: x86_64, manylinux: auto }
+          - { os: ubuntu-latest, target: aarch64, manylinux: auto }
+          - { os: macos-latest, target: x86_64, manylinux: auto }
+          - { os: macos-latest, target: aarch64, manylinux: auto }
+          - { os: windows-latest, target: x64, manylinux: auto }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          manylinux: ${{ matrix.manylinux }}
+          args: --release --out dist -m crates/asterope-py/Cargo.toml
+      - name: The wheel solves a frame
+        if: (matrix.os == 'ubuntu-latest' && matrix.target == 'x86_64') || matrix.os == 'windows-latest' || (matrix.os == 'macos-latest' && matrix.target == 'aarch64')
+        shell: bash
+        run: |
+          python -m pip install numpy pytest
+          python -m pip install --no-index --find-links dist asterope
+          python -m pytest crates/asterope-py/tests -q -k "not command_line"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheel-${{ matrix.os }}-${{ matrix.target }}
+          path: dist
+
+  publish:
+    needs: build
+    if: inputs.publish
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: wheel-*
+          path: dist
+          merge-multiple: true
+      - uses: pypa/gh-action-pypi-publish@release/v1

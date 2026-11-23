@@ -1,0 +1,25 @@
+[package]
+name = "asterope-emulated"
+description = "The Asterope flight path run on an emulated Cortex-M7, to count what it costs"
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[dependencies]
+asterope-core = { path = "../../crates/asterope-core" }
+
+[build-dependencies]
+asterope-core = { path = "../../crates/asterope-core", features = ["sim"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+debug = false
+
+[profile.dev]
+panic = "abort"
+
+[workspace]

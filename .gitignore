@@ -1,0 +1,13 @@
+/target
+/data/raw
+/web/node_modules
+/web/dist
+/web/src/wasm
+/web/test-results
+/web/playwright-report
+/validation-report.*
+*.log
+/examples/embedded/target
+/examples/emulated/target
+__pycache__/
+.pytest_cache/
